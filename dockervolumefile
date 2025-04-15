@@ -1,0 +1,210 @@
+
+C:\Windows\System32>cd C:\Users\vishn\OneDrive\Desktop\docker Project1
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1>dir
+ Volume in drive C has no label.
+ Volume Serial Number is B611-F481
+
+ Directory of C:\Users\vishn\OneDrive\Desktop\docker Project1
+
+14-04-2025  20:44    <DIR>          .
+14-04-2025  21:53    <DIR>          ..
+09-03-2025  13:33               217 app.mjs
+13-04-2025  21:28    <DIR>          docker volume
+05-04-2025  21:40    <DIR>          Docker2
+06-04-2025  10:45    <DIR>          docker3
+09-03-2025  13:32               115 Dockerfile
+09-03-2025  12:37               214 helpers.mjs
+09-03-2025  12:37               394 package.json
+               4 File(s)            940 bytes
+               5 Dir(s)  149,740,892,160 bytes free
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1>cd docker volume
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker volume create mydata
+mydata
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker run -d --name nginx1 -v mydata:/usr/share/nginx/html nginx
+Unable to find image 'nginx:latest' locally
+latest: Pulling from library/nginx
+8a628cdd7ccc: Pull complete
+3b6e18ae4ce6: Pull complete
+75b642592991: Pull complete
+e81a6b82cf64: Pull complete
+553c8756fd66: Pull complete
+3dce86e3b082: Pull complete
+10fe6d2248e3: Pull complete
+Digest: sha256:09369da6b10306312cd908661320086bf87fbae1b6b0c49a1f50ba531fef2eab
+Status: Downloaded newer image for nginx:latest
+b289cbc5e5c1d3b7d5aed840dd346397fa63aff44013fbc7100013859776e9ae
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker exec -it nginx bash
+Error response from daemon: No such container: nginx
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker exec -it nginx1 bash
+root@b289cbc5e5c1:/# echo "hello from volume" > /usr/share/nginx/html/index.html
+root@b289cbc5e5c1:/# curl http://localhost
+hello from volume
+root@b289cbc5e5c1:/# volume inspect mydata
+bash: volume: command not found
+root@b289cbc5e5c1:/# docker volume inspect mydata
+bash: docker: command not found
+root@b289cbc5e5c1:/# exit
+exit
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker volume ls
+DRIVER    VOLUME NAME
+local     mydata
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker volume inspect mydata
+[
+    {
+        "CreatedAt": "2025-04-15T16:01:28Z",
+        "Driver": "local",
+        "Labels": null,
+        "Mountpoint": "/var/lib/docker/volumes/mydata/_data",
+        "Name": "mydata",
+        "Options": null,
+        "Scope": "local"
+    }
+]
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>mkdir C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume\bindtest && echo "Bind test" > C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume\bindtest\index.html
+Access is denied.
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>mkdir C:\Users\vishn\OneDrive\Desktop\docker Project1\bindtest && echo "Bind test" > C:\Users\vishn\OneDrive\Desktop\docker Project1\bindtest\index.html
+A subdirectory or file C:\Users\vishn\OneDrive\Desktop\docker already exists.
+Error occurred while processing: C:\Users\vishn\OneDrive\Desktop\docker.
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>mkdir C:\Users\vishn\OneDrive\Desktop\docker Project4\bindtest && echo "Bind test" > C:\Users\vishn\OneDrive\Desktop\docker Project4\bindtest\index.html
+A subdirectory or file C:\Users\vishn\OneDrive\Desktop\docker already exists.
+Error occurred while processing: C:\Users\vishn\OneDrive\Desktop\docker.
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>mkdir C:\Temp\bindtestecho "Bind test" > C:\Temp\bindtest\index.htmldocker run -d --name nginx2 -v C:\Temp\bindtest:/usr/share/nginx/html nginx
+The system cannot find the path specified.
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>mkdir "C:\Users\vishn\OneDrive\Desktop\docker Project1\bindtest"
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>echo Bind test > "C:\Users\vishn\OneDrive\Desktop\docker Project1\bindtest\index.html"
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker run -d --name bindmount -v C:\Users\vishn\OneDrive\Desktop\docker Project1\bindtest\index.html -p 8081:80 nginx
+docker: invalid reference format: repository name (library/Project1\bindtest\index.html) must be lowercase
+
+Run 'docker run --help' for more information
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker run -d --name bindmount -p 8081:80 -v "C:\Users\vishn\OneDrive\Desktop\docker Project1\bindtest":/usr/share/nginx/html nginx
+672c852b3b849ed53d8e9e2879e8502644792e8c12aa8ff2b26a2ffaf119d96e
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>Bind test
+'Bind' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker inspect mydata
+[
+    {
+        "CreatedAt": "2025-04-15T16:01:28Z",
+        "Driver": "local",
+        "Labels": null,
+        "Mountpoint": "/var/lib/docker/volumes/mydata/_data",
+        "Name": "mydata",
+        "Options": null,
+        "Scope": "local"
+    }
+]
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker run -d --name nginx2 -v mydata:usr/share/nginx/html -p 8082:80 nginx
+docker: Error response from daemon: invalid volume specification: 'mydata:usr/share/nginx/html': invalid mount config for type "volume": invalid mount path: 'usr/share/nginx/html' mount path must be absolute
+
+Run 'docker run --help' for more information
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker run -d --name nginx2 -v mydata:/usr/share/nginx/html -p 8082:80 nginx
+9b85abbdda92c2ce03e60af92b52bbe1b2d3d1934be426ba86334b3e547864f9
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker run -d --name anonymousvol -v /usr/share/nginx/html nginx
+0ef28ab9e4114e39a5175bd4b1fd2560492101f6ad53c652ed399aa593b45471
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker volume ls
+DRIVER    VOLUME NAME
+local     a4e6ee60da7461422860d27bb23d3f2213f4c34e19f2d769e79f1503808bc955
+local     mydata
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker run --rm -v mydata:/data -v $(pwd):/backup busybox tar czf /backup/backup.tar.gz -C /data . - to backup the volume
+Unable to find image 'busybox:latest' locally
+latest: Pulling from library/busybox
+97e70d161e81: Pull complete
+Digest: sha256:37f7b378a29ceb4c551b1b5582e27747b855bbfaa73fa11914fe0df028dc581f
+Status: Downloaded newer image for busybox:latest
+docker: Error response from daemon: create $(pwd): "$(pwd)" includes invalid characters for a local volume name, only "[a-zA-Z0-9][a-zA-Z0-9_.-]" are allowed. If you intended to pass a host directory, use absolute path
+
+Run 'docker run --help' for more information
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker run --rm -v mydata:/data -v $(pwd):/backup busybox tar czf /backup/backup.tar.gz -C /data .
+docker: Error response from daemon: create $(pwd): "$(pwd)" includes invalid characters for a local volume name, only "[a-zA-Z0-9][a-zA-Z0-9_.-]" are allowed. If you intended to pass a host directory, use absolute path
+
+Run 'docker run --help' for more information
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker run --rm -v mydata:/data -v C:\Users\vishn\OneDrive\Desktop\docker Project1\bindtest:/backup busybox tar czf /backup/backup.tar.gz -C /data .
+docker: invalid reference format
+
+Run 'docker run --help' for more information
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker run --rm -v mydata:/data -v "C:\Users\vishn\OneDrive\Desktop\docker Project1\bindtest":/backup busybox tar czf /backup/backup.tar.gz -C /data .
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker run -v mydata:/data -v "C:\Users\vishn\OneDrive\Desktop\docker Project1\bindtest":/backup busybox tar czf /backup/backup.tar.gz -C /data .
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS                      PORTS                  NAMES
+fd353a8babf6   busybox   "tar czf /backup/bac…"   2 minutes ago    Exited (0) 15 seconds ago                          dreamy_khorana
+0ef28ab9e411   nginx     "/docker-entrypoint.…"   24 minutes ago   Up 24 minutes               80/tcp                 anonymousvol
+9b85abbdda92   nginx     "/docker-entrypoint.…"   33 minutes ago   Up 33 minutes               0.0.0.0:8082->80/tcp   nginx2
+672c852b3b84   nginx     "/docker-entrypoint.…"   44 minutes ago   Up 44 minutes               0.0.0.0:8081->80/tcp   bindmount
+b289cbc5e5c1   nginx     "/docker-entrypoint.…"   2 hours ago      Up 5 minutes                80/tcp                 nginx1
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker start dreamy_khorana
+dreamy_khorana
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker run -v mydata:/data -v "C:\Users\vishn\OneDrive\Desktop\docker Project1\bindtest":/backup nginx tar czf /backup/backup.tar.gz -C /data .
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker run -v mydata:/data -v "C:\Users\vishn\OneDrive\Desktop\docker Project1\bindtest":/backup nginx tar xzf /backup/backup.tar.gz -C /data .
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker run -d --name subvol -v mydata:/usr/share/nginx/html/sub nginx
+dec0c77e303585755f383eb5c97aad4556cd95d65264ac9dcaf020cfe876587f
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS                      PORTS                  NAMES
+dec0c77e3035   nginx     "/docker-entrypoint.…"   2 minutes ago    Up 2 minutes                80/tcp                 subvol
+264172d309f5   nginx     "/docker-entrypoint.…"   5 minutes ago    Exited (0) 4 minutes ago                           sleepy_brattain
+a36ce6ac10a5   nginx     "/docker-entrypoint.…"   8 minutes ago    Exited (0) 8 minutes ago                           naughty_banach
+fd353a8babf6   busybox   "tar czf /backup/bac…"   17 minutes ago   Exited (0) 13 minutes ago                          dreamy_khorana
+0ef28ab9e411   nginx     "/docker-entrypoint.…"   38 minutes ago   Up 38 minutes               80/tcp                 anonymousvol
+9b85abbdda92   nginx     "/docker-entrypoint.…"   48 minutes ago   Up 48 minutes               0.0.0.0:8082->80/tcp   nginx2
+672c852b3b84   nginx     "/docker-entrypoint.…"   59 minutes ago   Up 59 minutes               0.0.0.0:8081->80/tcp   bindmount
+b289cbc5e5c1   nginx     "/docker-entrypoint.…"   2 hours ago      Up 19 minutes               80/tcp                 nginx1
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker volume inspect mydata
+[
+    {
+        "CreatedAt": "2025-04-15T16:01:28Z",
+        "Driver": "local",
+        "Labels": null,
+        "Mountpoint": "/var/lib/docker/volumes/mydata/_data",
+        "Name": "mydata",
+        "Options": null,
+        "Scope": "local"
+    }
+]
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker rm -f nginx1
+nginx1
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS             PORTS                  NAMES
+dec0c77e3035   nginx     "/docker-entrypoint.…"   4 minutes ago       Up 4 minutes       80/tcp                 subvol
+0ef28ab9e411   nginx     "/docker-entrypoint.…"   40 minutes ago      Up 40 minutes      80/tcp                 anonymousvol
+9b85abbdda92   nginx     "/docker-entrypoint.…"   50 minutes ago      Up 50 minutes      0.0.0.0:8082->80/tcp   nginx2
+672c852b3b84   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour   0.0.0.0:8081->80/tcp   bindmount
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker volume rm mydata
+Error response from daemon: remove mydata: volume is in use - [9b85abbdda92c2ce03e60af92b52bbe1b2d3d1934be426ba86334b3e547864f9, fd353a8babf69492006964741a4f39b336f54545de219da56cea0bf0fad7a757, a36ce6ac10a5f7b8cd0faa99a5929defbf1aa5e679dd3d3de1682313650decf5, 264172d309f5dee6b19f0dd883e12bea8aa8024d5ad58899283cceecf0a6c811, dec0c77e303585755f383eb5c97aad4556cd95d65264ac9dcaf020cfe876587f]
+
+C:\Users\vishn\OneDrive\Desktop\docker Project1\docker volume>docker
